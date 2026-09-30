@@ -1,0 +1,209 @@
+// Prisma Schema - Öğrenci Takip ve Veli Bilgilendirme Sistemi
+// PostgreSQL (Supabase) + Prisma ORM
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+// ─── Roller ───
+enum Role {
+  TEACHER
+  PARENT
+}
+
+enum LessonType {
+  INDIVIDUAL
+  GROUP
+}
+
+enum LessonStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  POSTPONED
+}
+
+enum AttendanceStatus {
+  ATTENDED
+  ABSENT
+  EXCUSED
+}
+
+// ─── Kullanıcı Modeli ───
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  role         Role
+  name         String
+  phone        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  // İlişkiler
+  students          Student[]          // Veli ise: çocukları
+  pushSubscriptions PushSubscription[]
+
+  @@map("users")
+}
+
+// ─── Öğrenci Modeli ───
+model Student {
+  id         String   @id @default(cuid())
+  name       String
+  grade      String?  // Sınıf (örn: "8. Sınıf")
+  school     String?  // Okul adı
+  parentId   String?
+  monthlyFee Float    @default(0)
+  balance    Float    @default(0) // Bakiye (negatif = borç)
+  tags       String[] // Zayıf/güçlü konular dizisi
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  // İlişkiler
+  parent      User?         @relation(fields: [parentId], references: [id], onDelete: SetNull)
+  lessons     Lesson[]      // Bireysel dersler
+  attendances Attendance[]
+  readingLogs ReadingLog[]
+  examResults ExamResult[]
+  payments    Payment[]
+  groups      GroupStudent[] // Many-to-many: Gruplar
+
+  @@map("students")
+}
+
+// ─── Grup Modeli ───
+model Group {
+  id        String   @id @default(cuid())
+  name      String
+  capacity  Int      @default(10)
+  level     String?  // Seviye (örn: "İleri", "Başlangıç")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // İlişkiler
+  students GroupStudent[]
+  lessons  Lesson[]
+
+  @@map("groups")
+}
+
+// ─── Grup-Öğrenci İlişki Tablosu (Many-to-Many) ───
+model GroupStudent {
+  id        String   @id @default(cuid())
+  groupId   String
+  studentId String
+  joinedAt  DateTime @default(now())
+
+  group   Group   @relation(fields: [groupId], references: [id], onDelete: Cascade)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([groupId, studentId])
+  @@map("group_students")
+}
+
+// ─── Ders Modeli ───
+model Lesson {
+  id          String       @id @default(cuid())
+  title       String
+  type        LessonType
+  date        DateTime     // Ders tarihi
+  startTime   String       // Başlangıç saati (örn: "14:00")
+  endTime     String       // Bitiş saati (örn: "15:30")
+  status      LessonStatus @default(SCHEDULED)
+  groupId     String?      // Grup dersi ise
+  studentId   String?      // Bireysel ders ise
+  notePublic  String?      // Veliye açık not
+  notePrivate String?      // Öğretmene özel gizli not
+  isRecurring Boolean      @default(false) // Tekrarlayan ders mi?
+  recurRule   String?      // Tekrar kuralı (örn: "WEEKLY:TUE")
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+
+  // İlişkiler
+  group       Group?       @relation(fields: [groupId], references: [id], onDelete: SetNull)
+  student     Student?     @relation(fields: [studentId], references: [id], onDelete: SetNull)
+  attendances Attendance[]
+
+  @@map("lessons")
+}
+
+// ─── Yoklama Modeli ───
+model Attendance {
+  id        String           @id @default(cuid())
+  lessonId  String
+  studentId String
+  status    AttendanceStatus
+  createdAt DateTime         @default(now())
+
+  lesson  Lesson  @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, studentId])
+  @@map("attendances")
+}
+
+// ─── Kitap Okuma Kaydı ───
+model ReadingLog {
+  id        String   @id @default(cuid())
+  studentId String
+  bookTitle String
+  pageCount Int
+  logDate   DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("reading_logs")
+}
+
+// ─── Deneme Sınavı Sonuçları ───
+model ExamResult {
+  id           String   @id @default(cuid())
+  studentId    String
+  examName     String   // Sınav adı
+  examDate     DateTime
+  correctCount Int
+  wrongCount   Int
+  netScore     Float    // Net puan
+  details      Json?    // Ders bazlı netler { turkce: 15.5, mat: 12.0, fen: 8.25 }
+  createdAt    DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("exam_results")
+}
+
+// ─── Ödeme Modeli ───
+model Payment {
+  id            String   @id @default(cuid())
+  studentId     String
+  amount        Float
+  paymentDate   DateTime @default(now())
+  paymentMethod String?  // Nakit, Havale, EFT vb.
+  description   String?
+  createdAt     DateTime @default(now())
+
+  student Student @relation(fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@map("payments")
+}
+
+// ─── Push Bildirim Aboneliği ───
+model PushSubscription {
+  id       String @id @default(cuid())
+  userId   String
+  endpoint String
+  p256dh   String // Public key
+  auth     String // Auth secret
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, endpoint])
+  @@map("push_subscriptions")
+}

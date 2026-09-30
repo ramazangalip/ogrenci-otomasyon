@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="100%" height="100%">
+  <!-- Arka Plan (Squircle / Yuvarlatılmış Kare) -->
+  <rect width="512" height="512" rx="115" fill="#0f2b48" />
+  
+  <!-- İç Dairesel Zemin -->
+  <circle cx="256" cy="256" r="190" fill="#f4f8fa" />
+  
+  <!-- Mavi Alt Grafik Çizgisi -->
+  <path d="M 120 330 L 195 240 L 255 310 L 370 170" 
+        fill="none" stroke="#1b6080" stroke-width="26" stroke-linecap="round" stroke-linejoin="round" />
+        
+  <!-- İkinci Katman Grafik / Kalem Gövdesi (Turuncu Vurgu) -->
+  <path d="M 155 315 L 210 250 L 260 305 L 360 175" 
+        fill="none" stroke="#e06d3b" stroke-width="20" stroke-linecap="round" stroke-linejoin="round" />
+
+  <!-- Kalem Ucu / Yükseliş Oku -->
+  <polygon points="360,140 395,200 330,185" fill="#14213d" />
+  <polygon points="360,140 378,170 345,162" fill="#e06d3b" />
+</svg>
