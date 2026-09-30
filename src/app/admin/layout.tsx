@@ -129,9 +129,9 @@ export default function AdminLayout({
       </aside>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0 w-full max-w-full">
         {/* Top Bar */}
-        <header className="glass flex items-center justify-between px-4 lg:px-6 py-3 border-b border-slate-800/50">
+        <header className="glass flex items-center justify-between px-4 lg:px-6 py-3 border-b border-slate-800/50 w-full max-w-full shrink-0">
           <button
             onClick={() => setSidebarOpen(true)}
             className="lg:hidden p-2 rounded-lg text-slate-400 hover:text-white hover:bg-slate-800/50"
@@ -161,7 +161,7 @@ export default function AdminLayout({
         </header>
 
         {/* Page Content */}
-        <main className="flex-1 overflow-y-auto p-4 lg:p-6">
+        <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 lg:p-6 w-full max-w-full">
           {children}
         </main>
       </div>

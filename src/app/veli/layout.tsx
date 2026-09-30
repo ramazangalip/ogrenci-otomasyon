@@ -37,9 +37,9 @@ export default function VeliLayout({
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
       {/* Top Navigation */}
-      <header className="glass sticky top-0 z-50 border-b border-slate-800/50">
+      <header className="glass sticky top-0 z-50 border-b border-slate-800/50 w-full max-w-full">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
           <Link href="/veli" className="flex items-center gap-2.5">
             <div className="w-8 h-8 rounded-lg bg-slate-800/80 border border-slate-700/50 flex items-center justify-center p-1 shadow-md">
@@ -139,13 +139,13 @@ export default function VeliLayout({
       </nav>
 
       {/* Content */}
-      <main className="flex-1 max-w-4xl mx-auto w-full px-4 py-6 pb-28 sm:pb-12">
+      <main className="flex-1 max-w-4xl mx-auto w-full px-3 sm:px-4 py-6 pb-24 sm:pb-12 overflow-x-hidden">
         {children}
       </main>
 
       {/* Mobile Bottom Tab Bar */}
-      <nav className="sm:hidden fixed bottom-0 left-0 right-0 glass border-t border-slate-800/50 px-2 py-1.5 z-50">
-        <div className="flex items-center justify-around overflow-x-auto">
+      <nav className="sm:hidden fixed bottom-0 left-0 right-0 w-full max-w-full glass border-t border-slate-800/50 px-1 py-1.5 z-50 overflow-hidden">
+        <div className="flex items-center justify-around w-full max-w-full">
           {navLinks.map((link) => {
             const isActive =
               link.href === "/veli"
@@ -156,12 +156,12 @@ export default function VeliLayout({
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "flex flex-col items-center gap-0.5 px-2 py-1 rounded-xl text-[10px] transition-all min-w-[54px] text-center",
+                  "flex flex-col items-center gap-0.5 px-1.5 py-1 rounded-xl text-[10px] transition-all flex-1 text-center min-w-0",
                   isActive ? "text-emerald-400 font-medium" : "text-slate-400"
                 )}
               >
-                <link.icon className="w-4.5 h-4.5" />
-                <span className="truncate max-w-[60px]">{link.label}</span>
+                <link.icon className="w-4 h-4 shrink-0" />
+                <span className="truncate w-full text-[9px]">{link.label}</span>
               </Link>
             );
           })}

@@ -521,8 +521,8 @@ export default function CalendarPage() {
         </div>
       ) : view === "timegrid" ? (
         /* ─── 1. Saat Aralıklarına Göre Haftalık Çizelge (Time-Grid) ─── */
-        <div className="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/40 shadow-xl">
-          <div className="min-w-[900px]">
+        <div className="w-full max-w-full overflow-x-auto rounded-2xl border border-slate-800 bg-slate-950/40 shadow-xl min-w-0">
+          <div className="min-w-[840px]">
             {/* Header: Gün Başlıkları */}
             <div className="grid grid-cols-[80px_repeat(7,1fr)] border-b border-slate-800 sticky top-0 bg-slate-900/90 backdrop-blur-md z-20">
               <div className="p-3 text-center text-xs font-semibold text-slate-500 border-r border-slate-800/80 flex items-center justify-center">
