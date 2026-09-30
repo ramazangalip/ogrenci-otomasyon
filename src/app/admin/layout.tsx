@@ -45,7 +45,7 @@ export default function AdminLayout({
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen overflow-hidden">
+    <div className="flex h-[100dvh] w-full max-w-full overflow-hidden">
       {/* Mobile Overlay */}
       {sidebarOpen && (
         <div

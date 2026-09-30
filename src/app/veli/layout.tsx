@@ -37,7 +37,7 @@ export default function VeliLayout({
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <div className="min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
+    <div className="min-h-[100dvh] flex flex-col w-full max-w-full overflow-x-hidden">
       {/* Top Navigation */}
       <header className="glass sticky top-0 z-50 border-b border-slate-800/50 w-full max-w-full">
         <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
