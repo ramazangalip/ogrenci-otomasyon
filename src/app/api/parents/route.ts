@@ -26,6 +26,7 @@ export async function GET() {
             id: true,
             name: true,
             grade: true,
+            school: true,
           },
         },
         _count: {
@@ -34,12 +35,50 @@ export async function GET() {
           },
         },
       },
-      orderBy: { name: "asc" },
+      orderBy: { createdAt: "desc" },
     });
 
     return NextResponse.json(parents);
   } catch (error) {
     console.error("Veli listesi getirme hatası:", error);
+    return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
+  }
+}
+
+// PATCH - Veliye öğrenci bağla veya bağlantıyı kaldır
+export async function PATCH(request: Request) {
+  try {
+    const session = await auth();
+    if (!session || session.user.role !== "TEACHER") {
+      return NextResponse.json({ error: "Yetkisiz işlem" }, { status: 401 });
+    }
+
+    const { parentId, studentId, action } = await request.json();
+
+    if (!studentId) {
+      return NextResponse.json({ error: "Öğrenci ID belirtilmelidir" }, { status: 400 });
+    }
+
+    if (action === "unlink") {
+      const updated = await prisma.student.update({
+        where: { id: studentId },
+        data: { parentId: null },
+      });
+      return NextResponse.json({ success: true, student: updated });
+    }
+
+    if (!parentId) {
+      return NextResponse.json({ error: "Veli ID belirtilmelidir" }, { status: 400 });
+    }
+
+    const updated = await prisma.student.update({
+      where: { id: studentId },
+      data: { parentId },
+    });
+
+    return NextResponse.json({ success: true, student: updated });
+  } catch (error) {
+    console.error("Öğrenci veli bağlama hatası:", error);
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }

@@ -6,21 +6,24 @@ import type { NextRequest } from "next/server";
 export function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  // Statik dosyalar ve API auth rotaları için atla
+  // Statik dosyalar ve genel erişime açık sayfalar / API auth rotaları için atla
   if (
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/favicon") ||
     pathname === "/giris" ||
+    pathname === "/kayit" ||
     pathname === "/"
   ) {
     return NextResponse.next();
   }
 
-  // Session token'ı kontrol et (JWT cookie)
+  // Session token'ı kontrol et (Auth.js ve NextAuth JWT cookie'leri)
   const token =
     request.cookies.get("authjs.session-token")?.value ||
-    request.cookies.get("__Secure-authjs.session-token")?.value;
+    request.cookies.get("__Secure-authjs.session-token")?.value ||
+    request.cookies.get("next-auth.session-token")?.value ||
+    request.cookies.get("__Secure-next-auth.session-token")?.value;
 
   // Giriş yapmamış kullanıcıyı login sayfasına yönlendir
   if (!token && (pathname.startsWith("/admin") || pathname.startsWith("/veli"))) {

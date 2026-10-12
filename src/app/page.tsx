@@ -35,11 +35,18 @@ export default function HomePage() {
               DersTakip
             </span>
           </div>
-          <Link href="/giris">
-            <Button variant="outline" size="sm">
-              Giriş Yap
+          <div className="flex items-center gap-2">
+            <Button variant="ghost" size="sm" asChild className="text-slate-300 hover:text-white">
+              <Link href="/kayit">
+                Veli Kaydı
+              </Link>
             </Button>
-          </Link>
+            <Button variant="outline" size="sm" asChild>
+              <Link href="/giris">
+                Giriş Yap
+              </Link>
+            </Button>
+          </div>
         </nav>
 
         <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-12 py-16 lg:py-32 text-center">
@@ -64,18 +71,23 @@ export default function HomePage() {
             platformda birleştiren dijital çözüm.
           </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center animate-fade-in-delay-3 px-4">
-            <Link href="/giris" className="w-full sm:w-auto">
-              <Button size="lg" className="group w-full sm:w-auto">
-                Hemen Başla
+          <div className="flex flex-col sm:flex-row gap-3 justify-center animate-fade-in-delay-3 px-4">
+            <Button size="lg" asChild className="group w-full sm:w-auto">
+              <Link href="/giris">
+                Öğretmen Girişi
                 <ArrowRight className="w-5 h-5 transition-transform group-hover:translate-x-1" />
-              </Button>
-            </Link>
-            <Link href="/giris" className="w-full sm:w-auto">
-              <Button variant="outline" size="lg" className="w-full sm:w-auto">
-                Veli Girişi
-              </Button>
-            </Link>
+              </Link>
+            </Button>
+            <Button size="lg" asChild className="bg-emerald-600 hover:bg-emerald-500 text-white w-full sm:w-auto">
+              <Link href="/kayit">
+                Veli Kayıt Ol
+              </Link>
+            </Button>
+            <Button variant="outline" size="lg" asChild className="w-full sm:w-auto">
+              <Link href="/giris">
+                Giriş Yap
+              </Link>
+            </Button>
           </div>
         </div>
       </header>

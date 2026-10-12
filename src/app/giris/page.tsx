@@ -38,14 +38,18 @@ export default function LoginPage() {
         return;
       }
 
-      // Rol bilgisini almak için user bilgisine bakıyoruz
-      const res = await fetch("/api/auth/session");
-      const session = await res.json();
+      // Rol bilgisini almak için user oturumuna bakıyoruz
+      try {
+        const res = await fetch("/api/auth/session");
+        const session = await res.json();
 
-      if (session?.user?.role === "TEACHER") {
-        router.push("/admin");
-      } else {
-        router.push("/veli");
+        if (session?.user?.role === "PARENT") {
+          window.location.href = "/veli";
+        } else {
+          window.location.href = "/admin";
+        }
+      } catch {
+        window.location.href = "/admin";
       }
     } catch {
       setError("Giriş yapılırken bir hata oluştu");
@@ -153,6 +157,16 @@ export default function LoginPage() {
                   "Giriş Yap"
                 )}
               </Button>
+
+              <div className="text-center pt-3 border-t border-slate-800 text-xs text-slate-400">
+                Hesabınız yok mu?{" "}
+                <Link
+                  href="/kayit"
+                  className="text-indigo-400 hover:text-indigo-300 font-semibold underline underline-offset-4"
+                >
+                  Veli Olarak Kayıt Olun
+                </Link>
+              </div>
             </form>
           </CardContent>
         </Card>

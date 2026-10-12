@@ -66,7 +66,16 @@ export async function POST(request: Request) {
       );
     }
 
-    const student = await prisma.student.create({ data: validated.data });
+    const studentData = {
+      name: validated.data.name,
+      grade: validated.data.grade || null,
+      school: validated.data.school || null,
+      parentId: validated.data.parentId ? validated.data.parentId : null,
+      monthlyFee: validated.data.monthlyFee,
+      tags: validated.data.tags,
+    };
+
+    const student = await prisma.student.create({ data: studentData });
     return NextResponse.json(student, { status: 201 });
   } catch (error) {
     console.error("Öğrenci oluşturma hatası:", error);

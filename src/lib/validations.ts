@@ -13,14 +13,17 @@ export const registerSchema = z.object({
   password: z.string().min(6, "Şifre en az 6 karakter olmalıdır"),
   role: z.enum(["TEACHER", "PARENT"]),
   phone: z.string().optional(),
+  studentName: z.string().optional(),
+  studentGrade: z.string().optional(),
+  studentSchool: z.string().optional(),
 });
 
 // ─── Öğrenci Şemaları ───
 export const studentSchema = z.object({
   name: z.string().min(2, "Öğrenci adı en az 2 karakter olmalıdır"),
-  grade: z.string().optional(),
-  school: z.string().optional(),
-  parentId: z.string().optional(),
+  grade: z.string().optional().nullable().or(z.literal("")),
+  school: z.string().optional().nullable().or(z.literal("")),
+  parentId: z.string().optional().nullable().or(z.literal("")),
   monthlyFee: z.coerce.number().min(0, "Ücret negatif olamaz").default(0),
   tags: z.array(z.string()).default([]),
 });
