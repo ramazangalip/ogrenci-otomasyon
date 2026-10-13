@@ -35,7 +35,7 @@ export async function GET() {
   }
 }
 
-// POST - Yeni ödeme kaydet
+// POST - Yeni ödeme (Tahsilat) veya Borç / Gecikmiş Ödeme Tahakkuku kaydet
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -44,26 +44,56 @@ export async function POST(request: Request) {
     }
 
     const body = await request.json();
+    const type = body.type || "PAYMENT"; // "PAYMENT" (Tahsilat) veya "CHARGE" (Borç / Gecikmiş Ödeme)
+    const amount = Number(body.amount);
 
+    if (!body.studentId || isNaN(amount) || amount <= 0) {
+      return NextResponse.json({ error: "Lütfen geçerli bir öğrenci ve tutar girin" }, { status: 400 });
+    }
+
+    // 1. Borç / Gecikmiş Ödeme Ekleme (Bakiyeyi eksiye düşürür)
+    if (type === "CHARGE") {
+      const updatedStudent = await prisma.student.update({
+        where: { id: body.studentId },
+        data: { balance: { decrement: amount } },
+        select: { id: true, name: true, balance: true },
+      });
+
+      return NextResponse.json(
+        {
+          success: true,
+          type: "CHARGE",
+          message: "Gecikmiş ödeme / borç kaydı başarıyla eklendi",
+          student: updatedStudent,
+        },
+        { status: 201 }
+      );
+    }
+
+    // 2. Tahsilat / Ödeme Alma (Bakiyeyi artırır ve ödeme geçmişine kaydeder)
     const payment = await prisma.payment.create({
       data: {
         studentId: body.studentId,
-        amount: body.amount,
+        amount,
         paymentDate: body.paymentDate ? new Date(body.paymentDate) : new Date(),
-        paymentMethod: body.paymentMethod || null,
+        paymentMethod: body.paymentMethod || "Nakit",
         description: body.description || null,
+      },
+      include: {
+        student: { select: { id: true, name: true } },
       },
     });
 
-    // Bakiyeyi güncelle
-    await prisma.student.update({
+    // Bakiyeyi artır (borcu kapatır)
+    const updatedStudent = await prisma.student.update({
       where: { id: body.studentId },
-      data: { balance: { increment: body.amount } },
+      data: { balance: { increment: amount } },
+      select: { id: true, name: true, balance: true },
     });
 
-    return NextResponse.json(payment, { status: 201 });
+    return NextResponse.json({ ...payment, studentBalance: updatedStudent.balance }, { status: 201 });
   } catch (error) {
-    console.error("Ödeme kayıt hatası:", error);
+    console.error("Ödeme işlem hatası:", error);
     return NextResponse.json({ error: "Sunucu hatası" }, { status: 500 });
   }
 }
