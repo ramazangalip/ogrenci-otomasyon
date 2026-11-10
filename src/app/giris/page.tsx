@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import Link from "next/link";
+import { VisionDevStudioCredit } from "@/components/visiondevstudio-credit";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -170,6 +171,7 @@ export default function LoginPage() {
             </form>
           </CardContent>
         </Card>
+        <VisionDevStudioCredit className="mt-6 text-center" />
       </div>
     </div>
   );

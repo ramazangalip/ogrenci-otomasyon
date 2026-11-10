@@ -18,6 +18,7 @@ import {
   User,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { VisionDevStudioCredit } from "@/components/visiondevstudio-credit";
 
 const navLinks = [
   { href: "/veli", label: "Ana Sayfa", icon: LayoutDashboard },
@@ -142,6 +143,10 @@ export default function VeliLayout({
       <main className="flex-1 max-w-4xl mx-auto w-full px-3 sm:px-4 py-6 pb-24 sm:pb-12 overflow-x-hidden">
         {children}
       </main>
+
+      <footer className="mb-14 px-4 pb-4 text-center sm:mb-0">
+        <VisionDevStudioCredit />
+      </footer>
 
       {/* Mobile Bottom Tab Bar */}
       <nav className="sm:hidden fixed bottom-0 left-0 right-0 w-full max-w-full glass border-t border-slate-800/50 px-1 py-1.5 z-50 overflow-hidden">

@@ -23,6 +23,7 @@ import {
   UserCog,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { VisionDevStudioCredit } from "@/components/visiondevstudio-credit";
 
 const sidebarLinks = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
@@ -125,6 +126,7 @@ export default function AdminLayout({
             <LogOut className="w-4.5 h-4.5" />
             <span>Çıkış Yap</span>
           </button>
+          <VisionDevStudioCredit className="px-3 pt-3 leading-relaxed" />
         </div>
       </aside>
 
@@ -164,6 +166,9 @@ export default function AdminLayout({
         <main className="flex-1 overflow-y-auto overflow-x-hidden p-3 sm:p-4 lg:p-6 w-full max-w-full">
           {children}
         </main>
+        <footer className="shrink-0 border-t border-slate-800/50 px-4 py-2 text-center">
+          <VisionDevStudioCredit />
+        </footer>
       </div>
     </div>
   );

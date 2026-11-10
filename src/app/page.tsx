@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { PwaInstallSection } from "@/components/pwa-installer";
+import { VisionDevStudioCredit } from "@/components/visiondevstudio-credit";
 
 export default function HomePage() {
   return (
@@ -165,6 +166,7 @@ export default function HomePage() {
           © {new Date().getFullYear()} DersTakip Akademi - Öğrenci Takip ve Veli
           Bilgilendirme Sistemi. Tüm hakları saklıdır.
         </p>
+        <VisionDevStudioCredit className="mt-2" />
       </footer>
     </div>
   );

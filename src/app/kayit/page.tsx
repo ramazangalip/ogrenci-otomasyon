@@ -23,6 +23,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { VisionDevStudioCredit } from "@/components/visiondevstudio-credit";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -336,6 +337,7 @@ export default function RegisterPage() {
             </form>
           </CardContent>
         </Card>
+        <VisionDevStudioCredit className="mt-6 text-center" />
       </div>
     </div>
   );
